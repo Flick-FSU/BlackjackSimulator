@@ -10,35 +10,37 @@ namespace GamblingLibraryTest
     public class CardTest
     {
         [TestMethod]
-        public void Should_Be_Able_To_Change_Value_When_Assigner_Allows()
+        public void When_Assigner_Allows_Should_Be_Able_To_Change_Card_Value()
         {
+            const int oldAceValue = 1;
             const int newAceValue = 11;
             const CardType cardTypeToTest = CardType.Ace;
             const CardSuit cardSuitToTest = CardSuit.Clubs;
             var cardValueAssigner = MockRepository.GenerateMock<ICardValueAssigner>();
-            cardValueAssigner.Stub(cva => cva.CanAssignValueFor(cardTypeToTest, cardSuitToTest, newAceValue)).Return(true);
-            cardValueAssigner.Stub(cva => cva.GetCardValueFor(cardTypeToTest, CardSuit.Clubs)).Return(1);
+            cardValueAssigner.Stub(cva => cva.CanAssignNewValueFor(cardTypeToTest, cardSuitToTest, newAceValue)).Return(true);
+            cardValueAssigner.Stub(cva => cva.GetCardValueFor(cardTypeToTest, CardSuit.Clubs)).Return(oldAceValue);
 
-            var card = new Card(cardTypeToTest, cardSuitToTest, cardValueAssigner);
-            card.OverrideValue(newAceValue);
+            var sut = new Card(cardTypeToTest, cardSuitToTest, cardValueAssigner);
+            sut.OverrideValue(newAceValue);
 
-            Assert.AreEqual(card.Value, newAceValue);
+            Assert.AreEqual(sut.Value, newAceValue);
         }
 
         [TestMethod]
-        public void Should_Not_Be_Able_To_Change_Value_When_Assigner_Rejects()
+        public void When_Assigner_Does_Not_Allow_Should_Not_Be_Able_To_Change_Card_Value()
         {
+            const int oldJackValue = 10;
             const int newJackValue = 11;
             const CardType cardTypeToTest = CardType.Jack;
             const CardSuit cardSuitToTest = CardSuit.Clubs;
             var cardValueAssigner = MockRepository.GenerateMock<ICardValueAssigner>();
-            cardValueAssigner.Stub(cva => cva.CanAssignValueFor(cardTypeToTest, cardSuitToTest, newJackValue)).Return(false);
-            cardValueAssigner.Stub(cva => cva.GetCardValueFor(cardTypeToTest, CardSuit.Clubs)).Return(10);
+            cardValueAssigner.Stub(cva => cva.CanAssignNewValueFor(cardTypeToTest, cardSuitToTest, newJackValue)).Return(false);
+            cardValueAssigner.Stub(cva => cva.GetCardValueFor(cardTypeToTest, CardSuit.Clubs)).Return(oldJackValue);
 
-            var card = new Card(cardTypeToTest, cardSuitToTest, cardValueAssigner);
-            card.OverrideValue(newJackValue);
+            var sut = new Card(cardTypeToTest, cardSuitToTest, cardValueAssigner);
+            sut.OverrideValue(newJackValue);
 
-            Assert.AreNotEqual(card.Value, newJackValue);
+            Assert.AreNotEqual(sut.Value, newJackValue);
         }
     }
 }

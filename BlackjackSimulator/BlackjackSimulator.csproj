@@ -32,7 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,15 +49,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlackjackCardValueAssigner.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Entities\Dealer.cs" />
+    <Compile Include="Enums\HandOutcome.cs" />
+    <Compile Include="Interfaces\ISimulationScenario.cs" />
+    <Compile Include="Interfaces\ITableSimulation.cs" />
+    <Compile Include="Migrations\201802070451440_Add3NewCols.cs" />
+    <Compile Include="Migrations\201802070451440_Add3NewCols.Designer.cs">
+      <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="ScenarioBuilder.cs" />
+    <Compile Include="SimulationScenarios\OneBasicMinimumPlayerScenario.cs" />
+    <Compile Include="Models\ScenarioPlayerResult.cs" />
+    <Compile Include="Models\ScenarioPlayerResultContext.cs" />
+    <Compile Include="Strategies\BasicMinimumPlayerStrategy.cs" />
+    <Compile Include="Extensions\CardCollectionExtensions.cs" />
+    <Compile Include="GameManager.cs" />
+    <Compile Include="Strategies\StandardDealerStrategy.cs" />
+    <Compile Include="Interfaces\IDealer.cs" />
+    <Compile Include="Interfaces\IDealerStrategy.cs" />
+    <Compile Include="Interfaces\IGameManager.cs" />
+    <Compile Include="Interfaces\IPlayerStrategy.cs" />
+    <Compile Include="Interfaces\IPlayerHand.cs" />
+    <Compile Include="Entities\PlayerHand.cs" />
+    <Compile Include="Entities\Player.cs" />
+    <Compile Include="Models\TableSettings.cs" />
+    <Compile Include="Interfaces\IPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\TableSimulation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\GamblingLibrary\GamblingLibrary.csproj">
+      <Project>{39DE6E12-6C74-4969-B31B-50E01A5B5258}</Project>
+      <Name>GamblingLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201802070451440_Add3NewCols.resx">
+      <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

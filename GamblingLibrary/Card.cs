@@ -22,8 +22,19 @@ namespace GamblingLibrary
 
         public void OverrideValue(int newValue)
         {
-            if (_cardValueAssigner.CanAssignValueFor(Type, Suit, newValue))
+            if (_cardValueAssigner.CanAssignNewValueFor(Type, Suit, newValue))
                 Value = newValue;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var objectToCompare = (Card) obj;
+            return Type == objectToCompare.Type && Suit == objectToCompare.Suit;
+        }
+
+        public override string ToString()
+        {
+            return Type + " of " + Suit;
         }
     }
 }

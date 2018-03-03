@@ -51,7 +51,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicMinimumPlayerStrategyTest.cs" />
+    <Compile Include="BlackjackCardValueAssignerTest.cs" />
+    <Compile Include="ScenarioBuilderTest.cs" />
+    <Compile Include="DealerTest.cs" />
+    <Compile Include="PlayerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PlayerHandTest.cs" />
+    <Compile Include="GameManagerTest.cs" />
+    <Compile Include="DealerStrategyTest.cs" />
+    <Compile Include="CardCollectionExtensionsTest.cs" />
+    <Compile Include="TableSimulationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
@@ -62,6 +72,10 @@
     <ProjectReference Include="..\BlackjackSimulator\BlackjackSimulator.csproj">
       <Project>{D773BEE1-D49C-49BC-8B5C-B5A1E96CAD1F}</Project>
       <Name>BlackjackSimulator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GamblingLibrary\GamblingLibrary.csproj">
+      <Project>{39DE6E12-6C74-4969-B31B-50E01A5B5258}</Project>
+      <Name>GamblingLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
