@@ -6,15 +6,20 @@ using GamblingLibrary.Enums;
 
 namespace BlackjackSimulator
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-            //PrintStandardDeckOfCards();
             SimScenarioOne();
-            //TestShuffle();
 
             Console.ReadLine();
+        }
+
+        private static void SimScenarioOne()
+        {
+            var simulationScenario = new OneBasicMinimumPlayerScenario();
+            simulationScenario.BuildSimulation();
+            //simulationScenario.OutputResults();
         }
 
         private static void TestShuffle()
@@ -39,13 +44,6 @@ namespace BlackjackSimulator
                     Console.WriteLine((CardType) typeIndex + " of " + (CardSuit) suitIndex + ": " + cardOdds.ToString("P3"));
                 }
             }
-        }
-
-        private static void SimScenarioOne()
-        {
-            var simulationScenario = new OneBasicMinimumPlayerScenario();
-            simulationScenario.Run();
-            //simulationScenario.OutputResults();
         }
 
         private static void PrintStandardDeckOfCards()

@@ -292,7 +292,7 @@ namespace BlackjackSimulatorTest
             var players = GetSinglePlayerListWithSingleCompletedHand(initialPlayerTotalCash, handBet, HandOutcome.Pushed);
 
             _sut.PayoutOrCollectBetsFrom(players);
-            Assert.AreEqual(initialPlayerTotalCash + handBet, players.First().TotalCash);
+            Assert.AreEqual(initialPlayerTotalCash + handBet, players.First().CurrentTotalCash);
         }
 
         [TestMethod]
@@ -304,7 +304,7 @@ namespace BlackjackSimulatorTest
 
             _sut.PayoutOrCollectBetsFrom(players);
             Assert.AreEqual(initialPlayerTotalCash + handBet * Constants.NonBlackjackBetWinMultiplier,
-                players.First().TotalCash);
+                players.First().CurrentTotalCash);
         }
 
         [TestMethod]
@@ -323,7 +323,7 @@ namespace BlackjackSimulatorTest
 
             _sut.PayoutOrCollectBetsFrom(players);
             Assert.AreEqual(initialPlayerTotalCash + handBet * Constants.BlackjackBetWinMultiplier,
-                players.First().TotalCash);
+                players.First().CurrentTotalCash);
         }
 
         [TestMethod]

@@ -12,18 +12,20 @@ namespace BlackjackSimulator.Entities
     {
         public List<IPlayerHand> CurrentHands { get; }
         public List<IPlayerHand> HandHistory { get; }
-        public decimal TotalCash { get; set; }
+        public decimal CurrentTotalCash { get; set; }
+        public decimal StartingCash { get; set; }
         public bool DoesNeedCard { get; private set; }
         public IPlayerHand InPlayHand => CurrentHands[_currentInPlayHandIndex];
         public bool IsAtTable => _currentDealer != null;
+        public string StrategyName => _playerStrategy.GetType().Name;
 
         private int _currentInPlayHandIndex;
         private IDealer _currentDealer;
         private readonly IPlayerStrategy _playerStrategy;
 
-        public Player(decimal totalCash, IPlayerStrategy playerStrategy)
+        public Player(decimal currentTotalCash, IPlayerStrategy playerStrategy)
         {
-            TotalCash = totalCash;
+            StartingCash = CurrentTotalCash = currentTotalCash;
             _playerStrategy = playerStrategy;
             CurrentHands = new List<IPlayerHand>();
             HandHistory = new List<IPlayerHand>();
@@ -47,11 +49,11 @@ namespace BlackjackSimulator.Entities
         {
             CurrentHands.Add(new PlayerHand
             {
-                Bet = _playerStrategy.GetInitialBetAmount(HandHistory.LastOrDefault(), TotalCash, _currentDealer.TableSettings),
+                Bet = _playerStrategy.GetInitialBetAmount(HandHistory.LastOrDefault(), CurrentTotalCash, _currentDealer.TableSettings),
                 Outcome = HandOutcome.InProgress
             });
 
-            TotalCash -= InPlayHand.Bet;
+            CurrentTotalCash -= InPlayHand.Bet;
         }
 
         public void PlayTurn(ICard visibleCard)
@@ -81,14 +83,14 @@ namespace BlackjackSimulator.Entities
             foreach (var hand in CurrentHands)
             {
                 var handForHistory = hand.GetDeepCopy();
-                handForHistory.TotalPlayerCashAfterOutcome = TotalCash;
+                handForHistory.TotalPlayerCashAfterOutcome = CurrentTotalCash;
                 HandHistory.Add(handForHistory);
             }
         }
 
         public void LeaveTableOrStay()
         {
-            if (!_playerStrategy.ShouldLeaveTable(TotalCash, _currentDealer.TableSettings))
+            if (!_playerStrategy.ShouldLeaveTable(CurrentTotalCash, _currentDealer.TableSettings))
                 return;
 
             _currentDealer.UnregisterPlayer(this);
@@ -126,7 +128,7 @@ namespace BlackjackSimulator.Entities
 
         private void DoubleDownOnCurrentHand()
         {
-            TotalCash -= InPlayHand.Bet;
+            CurrentTotalCash -= InPlayHand.Bet;
             InPlayHand.Bet *= 2;
             InPlayHand.IsADoubleDown = true;
         }
@@ -134,12 +136,12 @@ namespace BlackjackSimulator.Entities
         private void SplitCurrentHand()
         {
             CurrentHands.Add(InPlayHand.Split());
-            TotalCash -= InPlayHand.Bet;
+            CurrentTotalCash -= InPlayHand.Bet;
         }
 
         private bool HasEnoughCashToDoubleCurrentHandBet()
         {
-            return TotalCash >= InPlayHand.Bet;
+            return CurrentTotalCash >= InPlayHand.Bet;
         }
     }
 }

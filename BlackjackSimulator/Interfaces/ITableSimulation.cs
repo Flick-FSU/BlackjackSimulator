@@ -7,5 +7,6 @@ namespace BlackjackSimulator.Interfaces
         IDealer Dealer { get; }
         void Seat(IPlayer player);
         List<IPlayer> RunSimulationUntilAllPlayersUnregister();
+        int NumberOfPlayers { get; }
     }
 }

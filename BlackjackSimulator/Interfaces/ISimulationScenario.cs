@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using BlackjackSimulator.Entities;
 
 namespace BlackjackSimulator.Interfaces
 {
     public interface ISimulationScenario
     {
-        void Run();
-        //void OutputResults();
+        TableSimulation BuildSimulation();
     }
 }

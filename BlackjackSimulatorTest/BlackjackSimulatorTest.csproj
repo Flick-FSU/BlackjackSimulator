@@ -53,7 +53,6 @@
   <ItemGroup>
     <Compile Include="BasicMinimumPlayerStrategyTest.cs" />
     <Compile Include="BlackjackCardValueAssignerTest.cs" />
-    <Compile Include="ScenarioBuilderTest.cs" />
     <Compile Include="DealerTest.cs" />
     <Compile Include="PlayerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -62,6 +61,8 @@
     <Compile Include="DealerStrategyTest.cs" />
     <Compile Include="CardCollectionExtensionsTest.cs" />
     <Compile Include="TableSimulationTest.cs" />
+    <Compile Include="ScenarioRunnerTest.cs" />
+    <Compile Include="SimulationsRunnerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

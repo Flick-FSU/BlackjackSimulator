@@ -44,6 +44,12 @@ namespace BlackjackSimulatorTest
         }
 
         [TestMethod]
+        public void When_Initializing_Player_Starting_Cash_Should_Equal_Current_Cash()
+        {
+            Assert.AreEqual(_sut.CurrentTotalCash, _sut.StartingCash);
+        }
+
+        [TestMethod]
         public void When_Taking_A_Card_Should_Throw_Exception_If_No_Bet_Is_Placed_Or_Hand_In_Play()
         {
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => _sut.TakeCard(_nullCard));
@@ -93,12 +99,12 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Initial_Bet_Placed_Should_Remove_Bet_Amount_From_Total_Cash()
         {
-            decimal initialTotalCash = _sut.TotalCash;
+            decimal initialTotalCash = _sut.CurrentTotalCash;
             _mockPlayerStrategy.Stub(mps => mps.GetInitialBetAmount(null, 0, null)).IgnoreArguments()
                 .Return(_tableSettings.MinimumBet);
             _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
             _sut.PlaceInitialBet();
-            Assert.AreEqual(initialTotalCash - _sut.TotalCash, _sut.CurrentHands[0].Bet);
+            Assert.AreEqual(initialTotalCash - _sut.CurrentTotalCash, _sut.CurrentHands[0].Bet);
         }
 
         [TestMethod]
@@ -291,10 +297,10 @@ namespace BlackjackSimulatorTest
         public void When_Player_Splits_Should_Reduce_Total_Cash_Amount_By_Bet_Amount_Of_Current_Hand()
         {
             GivePlayerSplittableHand(_nullCard);
-            var initialTotalCash = _sut.TotalCash;
+            var initialTotalCash = _sut.CurrentTotalCash;
 
             _sut.PlayTurn(_nullCard);
-            Assert.AreEqual(initialTotalCash - _sut.InPlayHand.Bet, _sut.TotalCash);
+            Assert.AreEqual(initialTotalCash - _sut.InPlayHand.Bet, _sut.CurrentTotalCash);
         }
 
         [TestMethod] public void When_Player_Splits_Should_Set_Split_Flag()
@@ -439,7 +445,7 @@ namespace BlackjackSimulatorTest
         {
             var tableSettings = new TableSettings(10, 500, 4);
             _sut.JoinTableWith(GetMockDealerWith(tableSettings));
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.TotalCash, tableSettings)).Return(false);
+            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, tableSettings)).Return(false);
 
             _sut.LeaveTableOrStay();
             Assert.IsTrue(_sut.IsAtTable);
@@ -450,7 +456,7 @@ namespace BlackjackSimulatorTest
         {
             var mockDealer = GetMockDealerWith(_tableSettings);
             _sut.JoinTableWith(mockDealer);
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.TotalCash, _tableSettings)).Return(true);
+            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Return(true);
 
             _sut.LeaveTableOrStay();
 
@@ -461,7 +467,7 @@ namespace BlackjackSimulatorTest
         public void When_Player_Strategy_Says_To_Leave_Table_Player_Should_Indicate_Is_Not_At_Table()
         {
             _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.TotalCash, _tableSettings)).Return(true);
+            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Return(true);
 
             _sut.LeaveTableOrStay();
             Assert.IsFalse(_sut.IsAtTable);

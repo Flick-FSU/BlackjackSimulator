@@ -10,8 +10,9 @@ namespace BlackjackSimulator.Entities
     {
         public IDealer Dealer { get; }
         public List<IPlayer> SeatedPlayers { get; }
-        private readonly TableSettings _tableSettings;
+        public int NumberOfPlayers => SeatedPlayers.Count;
 
+        private readonly TableSettings _tableSettings;
 
         public TableSimulation(IDealer dealer, TableSettings tableSettings)
         {

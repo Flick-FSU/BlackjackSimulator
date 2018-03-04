@@ -1,9 +1,9 @@
 ﻿namespace BlackjackSimulator.Models
 {
-    public class ScenarioPlayerResult
+    public class PlayerSimulationsStatistics
     {
         public int ID { get; set; }
-        public string ScenarioName { get; set; }
+        public string StrategyName { get; set; }
         public decimal AverageBet { get; set; }
         public decimal StartingCash { get; set; }
         public int RunCount { get; set; }

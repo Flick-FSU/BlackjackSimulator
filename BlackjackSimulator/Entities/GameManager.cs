@@ -6,7 +6,7 @@ using BlackjackSimulator.Interfaces;
 using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator
+namespace BlackjackSimulator.Entities
 {
     public class GameManager : IGameManager
     {
@@ -115,19 +115,19 @@ namespace BlackjackSimulator
                 case HandOutcome.Won:
                     if (playerHand.IsBlackjack)
                     {
-                        player.TotalCash += Math.Round(playerHand.Bet * Constants.BlackjackBetWinMultiplier,
+                        player.CurrentTotalCash += Math.Round(playerHand.Bet * Constants.BlackjackBetWinMultiplier,
                             Constants.DecimalDigitsForCash);
                     }
                     else
                     {
-                        player.TotalCash += Math.Round(playerHand.Bet * Constants.NonBlackjackBetWinMultiplier,
+                        player.CurrentTotalCash += Math.Round(playerHand.Bet * Constants.NonBlackjackBetWinMultiplier,
                             Constants.DecimalDigitsForCash);
                     }
                     return 0;
                 case HandOutcome.Lost:
                     return playerHand.Bet;
                 case HandOutcome.Pushed:
-                    player.TotalCash += playerHand.Bet;
+                    player.CurrentTotalCash += playerHand.Bet;
                     return 0;
                 default:
                     throw new ArgumentOutOfRangeException();

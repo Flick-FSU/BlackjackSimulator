@@ -52,6 +52,7 @@
     <Compile Include="BlackjackCardValueAssigner.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Entities\Dealer.cs" />
+    <Compile Include="Interfaces\ISimulationsRunner.cs" />
     <Compile Include="Enums\HandOutcome.cs" />
     <Compile Include="Interfaces\ISimulationScenario.cs" />
     <Compile Include="Interfaces\ITableSimulation.cs" />
@@ -60,13 +61,15 @@
       <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="ScenarioBuilder.cs" />
-    <Compile Include="SimulationScenarios\OneBasicMinimumPlayerScenario.cs" />
-    <Compile Include="Models\ScenarioPlayerResult.cs" />
-    <Compile Include="Models\ScenarioPlayerResultContext.cs" />
+    <Compile Include="Models\PlayerSimulationsTotals.cs" />
+    <Compile Include="Models\SimulationProperties.cs" />
+    <Compile Include="SimulationScenarios\OneBasicMinimumPlayerBuilder.cs" />
+    <Compile Include="Models\PlayerSimulationsStatistics.cs" />
+    <Compile Include="Models\PlayerSimulationsStatisticsContext.cs" />
+    <Compile Include="Entities\SimulationsRunner.cs" />
     <Compile Include="Strategies\BasicMinimumPlayerStrategy.cs" />
     <Compile Include="Extensions\CardCollectionExtensions.cs" />
-    <Compile Include="GameManager.cs" />
+    <Compile Include="Entities\GameManager.cs" />
     <Compile Include="Strategies\StandardDealerStrategy.cs" />
     <Compile Include="Interfaces\IDealer.cs" />
     <Compile Include="Interfaces\IDealerStrategy.cs" />

@@ -7,10 +7,12 @@ namespace BlackjackSimulator.Interfaces
     {
         List<IPlayerHand> CurrentHands { get; }
         List<IPlayerHand> HandHistory { get; }
-        decimal TotalCash { get; set; }
+        decimal CurrentTotalCash { get; set; }
+        decimal StartingCash { get; set; }
         bool DoesNeedCard { get; }
         IPlayerHand InPlayHand { get; }
         bool IsAtTable { get; }
+        string StrategyName { get; }
 
         void TakeCard(ICard card);
         void PlaceInitialBet();
