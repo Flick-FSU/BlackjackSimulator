@@ -1,8 +1,10 @@
-﻿namespace BlackjackSimulator.Entities.Interfaces
+﻿using BlackjackSimulator.Models;
+
+namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface ISimulationsRunner
     {
-        void Load(ITableSimulation tableSimulation);
+        void Load(SimulationProperties simulationProperties);
         void Run(int numberOfSimulationRuns);
     }
 }

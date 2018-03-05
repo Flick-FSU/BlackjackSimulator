@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using BlackjackSimulator.Entities;
+using BlackjackSimulator.Repositories;
 using BlackjackSimulator.SimulationScenarios;
 using GamblingLibrary;
 using GamblingLibrary.Enums;
@@ -9,18 +9,16 @@ namespace BlackjackSimulator
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            SimScenarioOne();
+            var simulationRunner = new SimulationsRunner(new PlayerSimulationStatisticsRepository(),
+                new SimulationsOutputHandler());
+            var simulationScenario = new OneBasicMinimumPlayerScenario();
+
+            simulationRunner.Load(simulationScenario.GetSimulationProperties());
+            simulationRunner.Run(1000);
 
             Console.ReadLine();
-        }
-
-        private static void SimScenarioOne()
-        {
-            var simulationScenario = new OneBasicMinimumPlayerScenario();
-            simulationScenario.BuildSimulation();
-            //simulationScenario.OutputResults();
         }
 
         private static void TestShuffle()

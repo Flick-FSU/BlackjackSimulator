@@ -6,6 +6,8 @@ using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Enums;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.Repositories.Interfaces;
+using BlackjackSimulator.Strategies;
+using BlackjackSimulator.Strategies.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 
@@ -31,37 +33,29 @@ namespace BlackjackSimulatorTest
         }
 
         [TestMethod]
-        public void When_Running_Simulations_Should_Call_Table_Simulation_Run_Method_Once_For_Each_Simulation_Run()
-        {
-            var strictMockTableSimulation = MockRepository.GenerateStrictMock<ITableSimulation>();
-            strictMockTableSimulation.Expect(mts => mts.NumberOfPlayers).Repeat.Twice().Return(1);
-            strictMockTableSimulation.Expect(mts => mts.RunSimulationUntilAllPlayersUnregister()).Repeat.Twice()
-                .Return(new List<IPlayer>());
-
-            strictMockTableSimulation.Replay();
-
-            _sut.Load(strictMockTableSimulation);
-            _sut.Run(2);
-            strictMockTableSimulation.VerifyAllExpectations();
-        }
-
-        [TestMethod]
         public void When_Running_Simulations_Should_Save_Simulations_Statistics_In_Repository()
         {
             var mockStatisticsRepository = MockRepository.GenerateMock<IPlayerSimulationStatisticsRepository>();
             var mockSimulationsOutputHandler = MockRepository.GenerateMock<ISimulationsOutputHandler>();
             _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler);
-            var mockTableSimulation = MockRepository.GenerateMock<ITableSimulation>();
-            mockTableSimulation.Stub(mts => mts.NumberOfPlayers).Return(1);
             var mockPlayer = MockRepository.GenerateMock<IPlayer>();
             mockPlayer.Stub(mp => mp.HandHistory).Return(new List<IPlayerHand> {GetHandHistoryHand()});
             mockPlayer.Stub(mp => mp.StartingCash).Return(100);
-            mockTableSimulation.Stub(mts => mts.RunSimulationUntilAllPlayersUnregister())
-                .Return(new List<IPlayer> {mockPlayer});
+            var simulationProperties = new SimulationProperties
+            {
+                MaximumBetForTable = 100,
+                MinimumBetForTable = 10,
+                MaximumPlayersForTable = 2,
+                NumberOfDecksInShoe = 2,
+                PlayerPropertiesCollection = new List<PlayerProperties>
+                {
+                    new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 }
+                }
+            };
 
             mockStatisticsRepository.Expect(msr => msr.Save(new List<PlayerSimulationsStatistics>())).IgnoreArguments();
             mockStatisticsRepository.Replay();
-            _sut.Load(mockTableSimulation);
+            _sut.Load(simulationProperties);
             _sut.Run(2);
             
             mockStatisticsRepository.VerifyAllExpectations();

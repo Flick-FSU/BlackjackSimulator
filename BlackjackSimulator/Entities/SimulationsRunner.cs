@@ -13,10 +13,9 @@ namespace BlackjackSimulator.Entities
     {
         private readonly IPlayerSimulationStatisticsRepository _mockStatisticsRepository;
         private readonly ISimulationsOutputHandler _simulationsOutputHandler;
-        private ITableSimulation _tableSimulation;
+        private SimulationProperties _simulationProperties;
         private int _numberOfSimulationRuns;
         private List<PlayerSimulationsTotals> _playerSimulationsTotalsCollection;
-        private List<IPlayer> _finishedPlayers;
 
         public SimulationsRunner(IPlayerSimulationStatisticsRepository mockStatisticsRepository, ISimulationsOutputHandler simulationsOutputHandler)
         {
@@ -24,18 +23,21 @@ namespace BlackjackSimulator.Entities
             _simulationsOutputHandler = simulationsOutputHandler;
         }
 
-        public void Load(ITableSimulation tableSimulation)
+        public void Load(SimulationProperties simulationProperties)
         {
-            _tableSimulation = tableSimulation;
+            _simulationProperties = simulationProperties;
             _playerSimulationsTotalsCollection = new List<PlayerSimulationsTotals>();
-            for (int playerIndex = 0; playerIndex < _tableSimulation.NumberOfPlayers; playerIndex++)
-                _playerSimulationsTotalsCollection.Add(new PlayerSimulationsTotals());
+            foreach (var player in _simulationProperties.PlayerPropertiesCollection)
+            {
+                _playerSimulationsTotalsCollection.Add(new PlayerSimulationsTotals(player.PlayerStrategy.GetType().Name,
+                    player.StartingCash));
+            }
         }
 
         public void Run(int numberOfSimulationRuns)
         {
             _numberOfSimulationRuns = numberOfSimulationRuns;
-            if (_tableSimulation == null)
+            if (_simulationProperties == null)
                 throw new InvalidOperationException("Simulation not loaded");
 
             var simulationTasks = new List<Task>();
@@ -60,11 +62,12 @@ namespace BlackjackSimulator.Entities
 
         private void ExecuteSimulationSteps(int runIndex)
         {
-            _finishedPlayers = _tableSimulation.RunSimulationUntilAllPlayersUnregister();
-            foreach (var player in _finishedPlayers)
+            var tableSimulation = new TableSimulationFactory().CreateTableSimulationFrom(_simulationProperties);
+            var finishedPlayers = tableSimulation.RunSimulationUntilAllPlayersUnregister();
+            foreach (var player in finishedPlayers)
             {
                 var playerSimulationsTotals =
-                    _playerSimulationsTotalsCollection.ElementAt(_finishedPlayers.IndexOf(player));
+                    _playerSimulationsTotalsCollection.ElementAt(finishedPlayers.IndexOf(player));
 
                 _simulationsOutputHandler.OutputSingleSimulationResult(runIndex, player);
 
@@ -89,16 +92,13 @@ namespace BlackjackSimulator.Entities
         private List<PlayerSimulationsStatistics> GetSimulationsStatistics()
         {
             var simulationsStatisticsToReturn = new List<PlayerSimulationsStatistics>();
-            foreach (var player in _finishedPlayers)
+            foreach (var playerSimulationsTotals in _playerSimulationsTotalsCollection)
             {
-                var playerSimulationsTotals =
-                    _playerSimulationsTotalsCollection.ElementAt(_finishedPlayers.IndexOf(player));
-
                 var simulationsStatistics = new PlayerSimulationsStatistics
                 {
-                    StrategyName = player.StrategyName,
+                    StrategyName = playerSimulationsTotals.StrategyName,
                     AverageBet = playerSimulationsTotals.TotalMoneyBet / (decimal)playerSimulationsTotals.TotalHandsPlayed,
-                    StartingCash = player.StartingCash,
+                    StartingCash = playerSimulationsTotals.StartingCash,
                     RunCount = _numberOfSimulationRuns,
                     AverageCountOfHandsUntilBroke = (decimal)playerSimulationsTotals.TotalHandsPlayed / (decimal) _numberOfSimulationRuns,
                     AverageMoneyLostPerHand = playerSimulationsTotals.TotalStartingMoneyLost / (decimal)playerSimulationsTotals.TotalHandsPlayed,
@@ -106,7 +106,7 @@ namespace BlackjackSimulator.Entities
                     LostHandsPercent = (decimal)playerSimulationsTotals.TotalHandsLost / (decimal)playerSimulationsTotals.TotalHandsPlayed,
                     PushHandsPercent = (decimal)playerSimulationsTotals.TotalHandsPushed / (decimal)playerSimulationsTotals.TotalHandsPlayed
                 };
-                simulationsStatistics.LossRate = simulationsStatistics.AverageBet / player.StartingCash *
+                simulationsStatistics.LossRate = simulationsStatistics.AverageBet / playerSimulationsTotals.StartingCash *
                                           simulationsStatistics.AverageCountOfHandsUntilBroke;
 
                 simulationsStatisticsToReturn.Add(simulationsStatistics);

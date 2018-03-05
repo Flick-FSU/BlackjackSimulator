@@ -22,7 +22,7 @@ namespace BlackjackSimulator.Repositories
                 foreach (var playerSimulationsStatistics in playerSimulationsStatisticsCollection)
                 {
                     db.PlayerSimulationsStatisticsCollection.Add(playerSimulationsStatistics);
-                    db.SaveChangesAsync();
+                    db.SaveChanges();
                 }
             }
         }

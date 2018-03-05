@@ -2,6 +2,14 @@
 {
     public class PlayerSimulationsTotals
     {
+        public PlayerSimulationsTotals(string strategyName, decimal startingCash)
+        {
+            StrategyName = strategyName;
+            StartingCash = startingCash;
+        }
+
+        public string StrategyName { get; }
+        public decimal StartingCash { get; }
         public int TotalHandsPlayed;
         public int TotalHandsWon;
         public int TotalHandsPushed;

@@ -54,8 +54,14 @@
     <Compile Include="Entities\Dealer.cs" />
     <Compile Include="Entities\Interfaces\ISimulationsRunner.cs" />
     <Compile Include="Entities\Interfaces\ISimulationsOutputHandler.cs" />
+    <Compile Include="Entities\TableSimulationFactory.cs" />
     <Compile Include="Entities\SimulationsOutputHandler.cs" />
     <Compile Include="Enums\HandOutcome.cs" />
+    <Compile Include="Migrations\201803050314101_NewStats.cs" />
+    <Compile Include="Migrations\201803050314101_NewStats.Designer.cs">
+      <DependentUpon>201803050314101_NewStats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PlayerProperties.cs" />
     <Compile Include="Repositories\Interfaces\IPlayerSimulationStatisticsRepository.cs" />
     <Compile Include="Repositories\PlayerSimulationStatisticsRepository.cs" />
     <Compile Include="SimulationScenarios\Interfaces\ISimulationScenario.cs" />
@@ -67,7 +73,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\PlayerSimulationsTotals.cs" />
     <Compile Include="Models\SimulationProperties.cs" />
-    <Compile Include="SimulationScenarios\OneBasicMinimumPlayerBuilder.cs" />
+    <Compile Include="SimulationScenarios\OneBasicMinimumPlayerScenario.cs" />
     <Compile Include="Models\PlayerSimulationsStatistics.cs" />
     <Compile Include="Models\PlayerSimulationsStatisticsContext.cs" />
     <Compile Include="Entities\SimulationsRunner.cs" />
@@ -103,6 +109,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201802070451440_Add3NewCols.resx">
       <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803050314101_NewStats.resx">
+      <DependentUpon>201803050314101_NewStats.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

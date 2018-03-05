@@ -135,7 +135,6 @@ namespace BlackjackSimulatorTest
             Assert.IsTrue(newPlayerHand.IsASplit);
         }
 
-
         [TestMethod]
         public void When_Getting_Deep_Copy_Of_Player_Hand_Should_Have_No_References_To_The_Same_Object()
         {

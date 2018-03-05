@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace BlackjackSimulator.Models
         public decimal MinimumBetForTable { get; set; }
         public decimal MaximumBetForTable { get; set; }
         public int MaximumPlayersForTable { get; set; }
-        public int NumberOfDecks { get; set; }
-        public List<IPlayer> Players { get; set; }
+        public int NumberOfDecksInShoe { get; set; }
+        public List<PlayerProperties> PlayerPropertiesCollection { get; set; }
     }
 }
