@@ -1,6 +1,6 @@
 ﻿using BlackjackSimulator.Entities;
-using BlackjackSimulator.Interfaces;
 using BlackjackSimulator.Models;
+using BlackjackSimulator.SimulationScenarios.Interfaces;
 using BlackjackSimulator.Strategies;
 using GamblingLibrary;
 

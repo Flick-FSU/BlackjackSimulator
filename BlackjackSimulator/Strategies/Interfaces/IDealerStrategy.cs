@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Strategies.Interfaces
 {
     public interface IDealerStrategy
     {

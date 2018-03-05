@@ -2,7 +2,7 @@
 using BlackjackSimulator.Models;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface IDealer
     {
@@ -13,7 +13,7 @@ namespace BlackjackSimulator.Interfaces
 
         void PlaySingleGame();
         void Register(IPlayer player);
-        void UnregisterPlayer(IPlayer player);
+        void Unregister(IPlayer player);
         void SetTableSettingsWith(TableSettings tableSettings);
     }
 }

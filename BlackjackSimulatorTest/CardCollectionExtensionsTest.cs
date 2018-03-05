@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BlackjackSimulator;
+using BlackjackSimulator.Entities;
 using BlackjackSimulator.Extensions;
 using GamblingLibrary;
 using GamblingLibrary.Enums;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BlackjackSimulator.Extensions;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary.Interfaces;
 
 namespace BlackjackSimulator.Strategies

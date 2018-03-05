@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using BlackjackSimulator;
 using BlackjackSimulator.Entities;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.Strategies;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

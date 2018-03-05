@@ -1,7 +1,8 @@
-﻿using BlackjackSimulator.Models;
+﻿using BlackjackSimulator.Entities.Interfaces;
+using BlackjackSimulator.Models;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Strategies.Interfaces
 {
     public interface IPlayerStrategy
     {

@@ -2,18 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Enums;
-using BlackjackSimulator.Interfaces;
 using BlackjackSimulator.Models;
+using BlackjackSimulator.Repositories.Interfaces;
 
 namespace BlackjackSimulator.Entities
 {
     public class SimulationsRunner : ISimulationsRunner
     {
+        private readonly IPlayerSimulationStatisticsRepository _mockStatisticsRepository;
+        private readonly ISimulationsOutputHandler _simulationsOutputHandler;
         private ITableSimulation _tableSimulation;
         private int _numberOfSimulationRuns;
         private List<PlayerSimulationsTotals> _playerSimulationsTotalsCollection;
         private List<IPlayer> _finishedPlayers;
+
+        public SimulationsRunner(IPlayerSimulationStatisticsRepository mockStatisticsRepository, ISimulationsOutputHandler simulationsOutputHandler)
+        {
+            _mockStatisticsRepository = mockStatisticsRepository;
+            _simulationsOutputHandler = simulationsOutputHandler;
+        }
 
         public void Load(ITableSimulation tableSimulation)
         {
@@ -36,29 +45,17 @@ namespace BlackjackSimulator.Entities
                 simulationTasks.Add(Task.Factory.StartNew(() => ExecuteSimulationSteps(index)));
             }
 
-            Task.Factory.ContinueWhenAll(simulationTasks.ToArray(), OutputResults);
+            //Task.Factory.ContinueWhenAll(simulationTasks.ToArray(), OutputResults); //This fails unit tests due to race conditions
             //or
             //simulationTasks.ForEach(st => st.Wait());
             //OutputResults();
             //or
-            //await Task.WhenAll(simulationTasks);
-            //OutputResults();
-        }
-
-        public void OutputResults(Task[] tasks)
-        {
-            var simulationsStatisticsCollection = GetSimulationsStatistics();
-
-            foreach (var playerSimulationsStatistics in simulationsStatisticsCollection)
-            {
-                using (var db = new PlayerSimulationsStatisticsContext())
-                {
-                    db.ScenarioResults.Add(playerSimulationsStatistics);
-                    db.SaveChanges();
-                }
-
-                Print(playerSimulationsStatistics);
-            }
+            var allSimulationsTask = Task.WhenAll(simulationTasks);
+            allSimulationsTask.Wait();
+            if (allSimulationsTask.Status == TaskStatus.RanToCompletion)
+                OutputResults();
+            else
+                throw new Exception("One or more threads did not complete");
         }
 
         private void ExecuteSimulationSteps(int runIndex)
@@ -69,16 +66,24 @@ namespace BlackjackSimulator.Entities
                 var playerSimulationsTotals =
                     _playerSimulationsTotalsCollection.ElementAt(_finishedPlayers.IndexOf(player));
 
-                OutputSingleSimulationResult(runIndex, player);
+                _simulationsOutputHandler.OutputSingleSimulationResult(runIndex, player);
 
                 playerSimulationsTotals.TotalHandsPlayed += player.HandHistory.Count;
                 playerSimulationsTotals.TotalHandsWon += player.HandHistory.Count(hh => hh.Outcome == HandOutcome.Won);
                 playerSimulationsTotals.TotalHandsLost += player.HandHistory.Count(hh => hh.Outcome == HandOutcome.Lost);
                 playerSimulationsTotals.TotalHandsPushed += player.HandHistory.Count(hh => hh.Outcome == HandOutcome.Pushed);
                 playerSimulationsTotals.TotalStartingMoneyLost += player.StartingCash - player.CurrentTotalCash;
-
                 playerSimulationsTotals.TotalMoneyBet += player.HandHistory.Sum(hh => hh.Bet);
             }
+        }
+
+        public void OutputResults()
+        {
+            var simulationsStatisticsCollection = GetSimulationsStatistics();
+            _mockStatisticsRepository.Save(simulationsStatisticsCollection);
+
+            foreach (var playerSimulationsStatistics in simulationsStatisticsCollection)
+                _simulationsOutputHandler.Print(playerSimulationsStatistics);
         }
 
         private List<PlayerSimulationsStatistics> GetSimulationsStatistics()
@@ -108,26 +113,6 @@ namespace BlackjackSimulator.Entities
             }
 
             return simulationsStatisticsToReturn;
-        }
-
-        private static void Print(PlayerSimulationsStatistics simulationsStatistics)
-        {
-            Console.WriteLine("----------Results of One Basic Minimum Player Scenario--------");
-            Console.WriteLine("Average number of hands until broke: " +
-                              simulationsStatistics.AverageCountOfHandsUntilBroke.ToString("F5"));
-            Console.WriteLine("Average money lost per hand: $" + simulationsStatistics.AverageMoneyLostPerHand.ToString("F5"));
-            Console.WriteLine("Hands won: " + simulationsStatistics.WonHandsPercent.ToString("P3"));
-            Console.WriteLine("Hands lost: " + simulationsStatistics.LostHandsPercent.ToString("P3"));
-            Console.WriteLine("Hands pushed: " + simulationsStatistics.PushHandsPercent.ToString("P3"));
-            Console.WriteLine("Loss rate percentage: " + simulationsStatistics.LossRate.ToString("F5"));
-        }
-
-        private static void OutputSingleSimulationResult(int runIndex, IPlayer player)
-        {
-            Console.Out.WriteLine("Simulation " + (runIndex + 1) + " ended in " +
-                                  player.HandHistory.Count +
-                                  " hands. Max cash: " + player.HandHistory
-                                      .Max(hh => hh.TotalPlayerCashAfterOutcome).ToString("C"));
         }
     }
 }

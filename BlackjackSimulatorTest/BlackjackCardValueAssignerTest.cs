@@ -1,4 +1,5 @@
 ﻿using BlackjackSimulator;
+using BlackjackSimulator.Entities;
 using GamblingLibrary.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

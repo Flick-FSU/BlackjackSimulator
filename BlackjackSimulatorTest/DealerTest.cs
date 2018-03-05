@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using BlackjackSimulator;
 using BlackjackSimulator.Entities;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.Strategies;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary;
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
@@ -56,7 +57,7 @@ namespace BlackjackSimulatorTest
             var mockBlackjackPlayer = MockRepository.GenerateMock<IPlayer>();
 
             _sut.Register(mockBlackjackPlayer);
-            _sut.UnregisterPlayer(mockBlackjackPlayer);
+            _sut.Unregister(mockBlackjackPlayer);
             Assert.AreEqual(0, _sut.RegisteredPlayers.Count);
         }
 

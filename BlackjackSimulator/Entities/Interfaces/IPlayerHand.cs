@@ -2,7 +2,7 @@
 using BlackjackSimulator.Enums;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface IPlayerHand
     {

@@ -61,7 +61,6 @@
     <Compile Include="DealerStrategyTest.cs" />
     <Compile Include="CardCollectionExtensionsTest.cs" />
     <Compile Include="TableSimulationTest.cs" />
-    <Compile Include="ScenarioRunnerTest.cs" />
     <Compile Include="SimulationsRunnerTest.cs" />
   </ItemGroup>
   <ItemGroup>

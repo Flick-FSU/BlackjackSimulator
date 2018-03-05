@@ -2,7 +2,7 @@
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator
+namespace BlackjackSimulator.Entities
 {
     public class BlackjackCardValueAssigner : ICardValueAssigner
     {

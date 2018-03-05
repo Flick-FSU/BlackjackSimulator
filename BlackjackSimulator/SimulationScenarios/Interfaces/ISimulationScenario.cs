@@ -1,6 +1,6 @@
 ﻿using BlackjackSimulator.Entities;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.SimulationScenarios.Interfaces
 {
     public interface ISimulationScenario
     {

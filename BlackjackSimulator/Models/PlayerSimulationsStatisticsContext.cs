@@ -8,6 +8,6 @@ namespace BlackjackSimulator.Models
         {
         }
 
-        public DbSet<PlayerSimulationsStatistics> ScenarioResults { get; set; }
+        public DbSet<PlayerSimulationsStatistics> PlayerSimulationsStatisticsCollection { get; set; }
     }
 }

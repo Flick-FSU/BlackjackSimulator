@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Extensions;
-using BlackjackSimulator.Interfaces;
 using BlackjackSimulator.Models;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary.Interfaces;
 
 namespace BlackjackSimulator.Entities
@@ -37,7 +38,7 @@ namespace BlackjackSimulator.Entities
             RegisteredPlayers.Add(player);
         }
 
-        public void UnregisterPlayer(IPlayer player)
+        public void Unregister(IPlayer player)
         {
             RegisteredPlayers.Remove(player);
         }

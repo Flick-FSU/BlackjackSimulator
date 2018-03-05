@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary.Interfaces;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface IGameManager
     {

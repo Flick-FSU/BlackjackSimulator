@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BlackjackSimulator.Interfaces
+namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface ITableSimulation
     {

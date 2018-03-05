@@ -49,13 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BlackjackCardValueAssigner.cs" />
+    <Compile Include="Entities\BlackjackCardValueAssigner.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Entities\Dealer.cs" />
-    <Compile Include="Interfaces\ISimulationsRunner.cs" />
+    <Compile Include="Entities\Interfaces\ISimulationsRunner.cs" />
+    <Compile Include="Entities\Interfaces\ISimulationsOutputHandler.cs" />
+    <Compile Include="Entities\SimulationsOutputHandler.cs" />
     <Compile Include="Enums\HandOutcome.cs" />
-    <Compile Include="Interfaces\ISimulationScenario.cs" />
-    <Compile Include="Interfaces\ITableSimulation.cs" />
+    <Compile Include="Repositories\Interfaces\IPlayerSimulationStatisticsRepository.cs" />
+    <Compile Include="Repositories\PlayerSimulationStatisticsRepository.cs" />
+    <Compile Include="SimulationScenarios\Interfaces\ISimulationScenario.cs" />
+    <Compile Include="Entities\Interfaces\ITableSimulation.cs" />
     <Compile Include="Migrations\201802070451440_Add3NewCols.cs" />
     <Compile Include="Migrations\201802070451440_Add3NewCols.Designer.cs">
       <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
@@ -71,15 +75,15 @@
     <Compile Include="Extensions\CardCollectionExtensions.cs" />
     <Compile Include="Entities\GameManager.cs" />
     <Compile Include="Strategies\StandardDealerStrategy.cs" />
-    <Compile Include="Interfaces\IDealer.cs" />
-    <Compile Include="Interfaces\IDealerStrategy.cs" />
-    <Compile Include="Interfaces\IGameManager.cs" />
-    <Compile Include="Interfaces\IPlayerStrategy.cs" />
-    <Compile Include="Interfaces\IPlayerHand.cs" />
+    <Compile Include="Entities\Interfaces\IDealer.cs" />
+    <Compile Include="Strategies\Interfaces\IDealerStrategy.cs" />
+    <Compile Include="Entities\Interfaces\IGameManager.cs" />
+    <Compile Include="Strategies\Interfaces\IPlayerStrategy.cs" />
+    <Compile Include="Entities\Interfaces\IPlayerHand.cs" />
     <Compile Include="Entities\PlayerHand.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Models\TableSettings.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
+    <Compile Include="Entities\Interfaces\IPlayer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\TableSimulation.cs" />
@@ -101,5 +105,6 @@
       <DependentUpon>201802070451440_Add3NewCols.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace BlackjackSimulator.Interfaces
+﻿namespace BlackjackSimulator.Entities.Interfaces
 {
     public interface ISimulationsRunner
     {

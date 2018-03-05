@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using BlackjackSimulator;
 using BlackjackSimulator.Entities;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary;
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
@@ -460,7 +461,7 @@ namespace BlackjackSimulatorTest
 
             _sut.LeaveTableOrStay();
 
-            mockDealer.AssertWasCalled(md => md.UnregisterPlayer(_sut));
+            mockDealer.AssertWasCalled(md => md.Unregister(_sut));
         }
 
         [TestMethod]

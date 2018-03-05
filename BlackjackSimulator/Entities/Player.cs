@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Enums;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 
@@ -23,9 +24,9 @@ namespace BlackjackSimulator.Entities
         private IDealer _currentDealer;
         private readonly IPlayerStrategy _playerStrategy;
 
-        public Player(decimal currentTotalCash, IPlayerStrategy playerStrategy)
+        public Player(decimal startingCash, IPlayerStrategy playerStrategy)
         {
-            StartingCash = CurrentTotalCash = currentTotalCash;
+            StartingCash = CurrentTotalCash = startingCash;
             _playerStrategy = playerStrategy;
             CurrentHands = new List<IPlayerHand>();
             HandHistory = new List<IPlayerHand>();
@@ -93,7 +94,7 @@ namespace BlackjackSimulator.Entities
             if (!_playerStrategy.ShouldLeaveTable(CurrentTotalCash, _currentDealer.TableSettings))
                 return;
 
-            _currentDealer.UnregisterPlayer(this);
+            _currentDealer.Unregister(this);
             _currentDealer = null;
         }
 

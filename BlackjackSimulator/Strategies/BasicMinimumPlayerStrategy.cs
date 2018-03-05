@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BlackjackSimulator.Interfaces;
+using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
+using BlackjackSimulator.Strategies.Interfaces;
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 
