@@ -29,7 +29,10 @@ namespace BlackjackSimulatorTest
                 MaximumPlayersForTable = 2,
                 MinimumBetForTable = 10,
                 NumberOfDecksInShoe = 2,
-                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties {PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 } }
+                PlayerPropertiesCollection = new List<PlayerProperties>
+                {
+                    new PlayerProperties {PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = 100 }
+                }
             };
 
             Assert.ThrowsException<ArgumentException>(() => _tableSimulationFactory.CreateTableSimulationFrom(simulationProperties));
@@ -44,7 +47,10 @@ namespace BlackjackSimulatorTest
                 MaximumPlayersForTable = 0,
                 MinimumBetForTable = 5,
                 NumberOfDecksInShoe = 2,
-                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 } }
+                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties
+                {
+                    PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = 100}
+                }
             };
 
             Assert.ThrowsException<ArgumentException>(() => _tableSimulationFactory.CreateTableSimulationFrom(simulationProperties));
@@ -74,7 +80,10 @@ namespace BlackjackSimulatorTest
                 MaximumPlayersForTable = 0,
                 MinimumBetForTable = 5,
                 NumberOfDecksInShoe = 0,
-                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 } }
+                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties
+                {
+                    PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = 100}
+                }
             };
 
             Assert.ThrowsException<ArgumentException>(() => _tableSimulationFactory.CreateTableSimulationFrom(simulationProperties));
@@ -90,7 +99,10 @@ namespace BlackjackSimulatorTest
                 MaximumPlayersForTable = 2,
                 MinimumBetForTable = 5,
                 NumberOfDecksInShoe = 1,
-                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 } }
+                PlayerPropertiesCollection = new List<PlayerProperties> { new PlayerProperties
+                {
+                    PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = 100}
+                }
             };
 
             Assert.IsInstanceOfType(_tableSimulationFactory.CreateTableSimulationFrom(simulationProperties), typeof(ITableSimulation));

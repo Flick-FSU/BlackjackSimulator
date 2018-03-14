@@ -1,5 +1,6 @@
 ﻿using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
+using System.Collections.Generic;
 
 namespace GamblingLibrary
 {
@@ -35,6 +36,16 @@ namespace GamblingLibrary
         public override string ToString()
         {
             return Type + " of " + Suit;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1654613438;
+            hashCode = hashCode * -1521134295 + Value.GetHashCode();
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + Suit.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<ICardValueAssigner>.Default.GetHashCode(_cardValueAssigner);
+            return hashCode;
         }
     }
 }

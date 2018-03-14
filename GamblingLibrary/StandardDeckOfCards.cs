@@ -3,7 +3,7 @@ using GamblingLibrary.Interfaces;
 
 namespace GamblingLibrary
 {
-    public class StandardDeckOfCards : GroupOfCards
+    public sealed class StandardDeckOfCards : GroupOfCards
     {
         public StandardDeckOfCards(ICardValueAssigner cardValueAssigner)
         {

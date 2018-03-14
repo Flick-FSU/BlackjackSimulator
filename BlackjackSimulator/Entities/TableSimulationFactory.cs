@@ -22,7 +22,8 @@ namespace BlackjackSimulator.Entities
 
             foreach (var playerProperties in simulationProperties.PlayerPropertiesCollection)
             {
-                var player = new Player(playerProperties.StartingCash, playerProperties.PlayerStrategy);
+                var strategy = (IPlayerStrategy) playerProperties.PlayerStrategy.GetConstructors()[0].Invoke(null);
+                var player = new Player(playerProperties.StartingCash, strategy);
                 tableSimulation.Seat(player);
             }
 

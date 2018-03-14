@@ -2,7 +2,7 @@
 
 namespace GamblingLibrary
 {
-    public class ShoeOfStandardDecksOfCards : GroupOfCards
+    public sealed class ShoeOfStandardDecksOfCards : GroupOfCards
     {
         public ShoeOfStandardDecksOfCards(ICardValueAssigner cardValueAssigner, int numberOfDecks)
         {

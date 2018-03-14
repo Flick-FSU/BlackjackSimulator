@@ -1,0 +1,51 @@
+﻿@model BlackjackSimulator.Models.SimulationProperties
+
+@{
+    ViewData["Title"] = "Run A Blackjack Simulation";
+}
+<h2>@ViewData["Title"]</h2>
+<br/>
+<div class="row">
+    <section>
+        <form method="post">
+            <h3>Simulator Properties</h3>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <hr />
+            <div class="row">
+                <section class="col-md-4">
+                    <h4>Table Properties</h4>
+                    <div class="form-group">
+                        <label asp-for="MaximumPlayersForTable" class="control-label">Maximum # of Players:</label>
+                        <input asp-for="MaximumPlayersForTable" class="form-control" type="number" min="1" style="width: 75px" />
+                        <span asp-validation-for="MaximumPlayersForTable" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MinimumBetForTable" class="control-label">Minimum Bet:</label>
+                        <input asp-for="MinimumBetForTable" class="form-control" type="number" min="1" style="width: 100px" />
+                        <span asp-validation-for="MinimumBetForTable" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MaximumBetForTable" class="control-label">Maximum Bet:</label>
+                        <input asp-for="MaximumBetForTable" class="form-control" type="number" min="1" style="width: 100px" />
+                        <span asp-validation-for="MaximumBetForTable" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="NumberOfDecksInShoe" class="control-label">Number of decks in shoe:</label>
+                        <input asp-for="NumberOfDecksInShoe" class="form-control" type="number" min="1" style="width: 75px" />
+                        <span asp-validation-for="NumberOfDecksInShoe" class="text-danger"></span>
+                    </div>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col-md-8">
+                    <h4>Create Players</h4>
+                    @foreach (var playerProperties in Model.PlayerPropertiesCollection)
+                    {
+                        @Html.Partial("PlayerPropertiesItem", playerProperties)
+                    }
+                    <input type="button" id="addPlayer" value="Add Player" />
+                </section>
+            </div>
+        </form>
+    </section>
+</div>

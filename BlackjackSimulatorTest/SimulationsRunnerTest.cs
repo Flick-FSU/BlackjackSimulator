@@ -49,7 +49,7 @@ namespace BlackjackSimulatorTest
                 NumberOfDecksInShoe = 2,
                 PlayerPropertiesCollection = new List<PlayerProperties>
                 {
-                    new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = 100 }
+                    new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = 100 }
                 }
             };
 

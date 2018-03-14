@@ -43,6 +43,7 @@ namespace BlackjackSimulator.Entities
             RegisteredPlayers.Remove(player);
         }
 
+        //todo: template method pattern
         public void PlaySingleGame()
         {
             if (RegisteredPlayers.Count == 0)

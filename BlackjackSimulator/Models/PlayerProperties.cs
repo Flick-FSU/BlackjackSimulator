@@ -5,7 +5,7 @@ namespace BlackjackSimulator.Models
 {
     public class PlayerProperties
     {
-        public IPlayerStrategy PlayerStrategy;
+        public Type PlayerStrategy; //todo: enforce constraint that Type needs to be and IPlayerStrategy
         public decimal StartingCash;
     }
 }

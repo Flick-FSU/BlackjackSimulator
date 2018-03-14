@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using BlackjackSimulator.Entities;
-using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.SimulationScenarios.Interfaces;
 using BlackjackSimulator.Strategies;
-using GamblingLibrary;
 
 namespace BlackjackSimulator.SimulationScenarios
 {
@@ -26,7 +23,10 @@ namespace BlackjackSimulator.SimulationScenarios
                 NumberOfDecksInShoe = NUMBER_OF_DECKS_IN_SHOE,
                 PlayerPropertiesCollection = new List<PlayerProperties>
                 {
-                    new PlayerProperties { PlayerStrategy = new BasicMinimumPlayerStrategy(), StartingCash = PLAYER_STARTING_CASH }
+                    new PlayerProperties
+                    {
+                        PlayerStrategy = new BasicMinimumPlayerStrategy().GetType(), StartingCash = PLAYER_STARTING_CASH
+                    }
                 }
             };
 

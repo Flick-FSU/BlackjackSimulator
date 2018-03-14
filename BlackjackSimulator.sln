@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackjackSimulator", "BlackjackSimulator\BlackjackSimulator.csproj", "{D773BEE1-D49C-49BC-8B5C-B5A1E96CAD1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackjackSimulatorTest", "BlackjackSimulatorTest\BlackjackSimulatorTest.csproj", "{AB0EB852-A9DC-44F1-BA02-2ED8811BDDC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamblingLibrary", "GamblingLibrary\GamblingLibrary.csproj", "{39DE6E12-6C74-4969-B31B-50E01A5B5258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GamblingLibrary", "GamblingLibrary\GamblingLibrary.csproj", "{39DE6E12-6C74-4969-B31B-50E01A5B5258}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamblingLibraryTest", "GamblingLibraryTest\GamblingLibraryTest.csproj", "{60DC64BA-7121-41D8-8495-DCABFBD7BE20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlackjackWeb", "BlackjackWeb\BlackjackWeb.csproj", "{D1E269AD-C896-4D9B-BB03-F17B0611BAD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{60DC64BA-7121-41D8-8495-DCABFBD7BE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60DC64BA-7121-41D8-8495-DCABFBD7BE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60DC64BA-7121-41D8-8495-DCABFBD7BE20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1E269AD-C896-4D9B-BB03-F17B0611BAD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1E269AD-C896-4D9B-BB03-F17B0611BAD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1E269AD-C896-4D9B-BB03-F17B0611BAD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1E269AD-C896-4D9B-BB03-F17B0611BAD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
