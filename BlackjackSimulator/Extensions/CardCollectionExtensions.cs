@@ -16,7 +16,7 @@ namespace BlackjackSimulator.Extensions
                 cards.ForEach(c => valueOfCards += c.Value);
                 cardValuesToReturn.Add(valueOfCards);
             }
-            else
+            else //todo: use bitwise loop to generate all possible values
             {
                 SetAllAceCardsToAlternateValue(cards);
 

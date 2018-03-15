@@ -8,7 +8,7 @@ using GamblingLibrary;
 
 namespace BlackjackSimulator.Entities
 {
-    public class TableSimulationFactory
+    public class TableSimulationFactory : ITableSimulationFactory
     {
         public ITableSimulation CreateTableSimulationFrom(SimulationProperties simulationProperties)
         {

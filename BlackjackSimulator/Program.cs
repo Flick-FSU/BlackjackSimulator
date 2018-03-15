@@ -12,7 +12,7 @@ namespace BlackjackSimulator
         public static void Main(string[] args)
         {
             var simulationRunner = new SimulationsRunner(new PlayerSimulationStatisticsRepository(),
-                new SimulationsOutputHandler());
+                new SimulationsOutputHandler(), new TableSimulationFactory());
             var simulationScenario = new OneBasicMinimumPlayerScenario();
 
             simulationRunner.Load(simulationScenario.GetSimulationProperties());

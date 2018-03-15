@@ -54,6 +54,7 @@
     <Compile Include="Entities\Dealer.cs" />
     <Compile Include="Entities\Interfaces\ISimulationsRunner.cs" />
     <Compile Include="Entities\Interfaces\ISimulationsOutputHandler.cs" />
+    <Compile Include="Entities\Interfaces\ITableSimulationFactory.cs" />
     <Compile Include="Entities\TableSimulationFactory.cs" />
     <Compile Include="Entities\SimulationsOutputHandler.cs" />
     <Compile Include="Enums\HandOutcome.cs" />

@@ -23,7 +23,8 @@ namespace BlackjackSimulatorTest
         {
             var mockStatisticsRepository = MockRepository.GenerateMock<IPlayerSimulationStatisticsRepository>();
             var mockSimulationsOutputHandler = MockRepository.GenerateMock<ISimulationsOutputHandler>();
-            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler);
+            var mockTableSimulationFactory = MockRepository.GenerateMock<ITableSimulationFactory>();
+            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler, mockTableSimulationFactory);
         }
 
         [TestMethod]
@@ -37,7 +38,7 @@ namespace BlackjackSimulatorTest
         {
             var mockStatisticsRepository = MockRepository.GenerateMock<IPlayerSimulationStatisticsRepository>();
             var mockSimulationsOutputHandler = MockRepository.GenerateMock<ISimulationsOutputHandler>();
-            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler);
+            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler, new TableSimulationFactory());
             var mockPlayer = MockRepository.GenerateMock<IPlayer>();
             mockPlayer.Stub(mp => mp.HandHistory).Return(new List<IPlayerHand> {GetHandHistoryHand()});
             mockPlayer.Stub(mp => mp.StartingCash).Return(100);

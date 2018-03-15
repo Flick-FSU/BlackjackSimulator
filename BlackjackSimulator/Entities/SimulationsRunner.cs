@@ -13,14 +13,17 @@ namespace BlackjackSimulator.Entities
     {
         private readonly IPlayerSimulationStatisticsRepository _mockStatisticsRepository;
         private readonly ISimulationsOutputHandler _simulationsOutputHandler;
+        private readonly ITableSimulationFactory _tableSimulationFactory;
         private SimulationProperties _simulationProperties;
         private int _numberOfSimulationRuns;
         private List<PlayerSimulationsTotals> _playerSimulationsTotalsCollection;
 
-        public SimulationsRunner(IPlayerSimulationStatisticsRepository mockStatisticsRepository, ISimulationsOutputHandler simulationsOutputHandler)
+        public SimulationsRunner(IPlayerSimulationStatisticsRepository mockStatisticsRepository, ISimulationsOutputHandler simulationsOutputHandler,
+            ITableSimulationFactory tableSimulationFactory)
         {
             _mockStatisticsRepository = mockStatisticsRepository;
             _simulationsOutputHandler = simulationsOutputHandler;
+            _tableSimulationFactory = tableSimulationFactory;
         }
 
         public void Load(SimulationProperties simulationProperties)
@@ -29,7 +32,7 @@ namespace BlackjackSimulator.Entities
             _playerSimulationsTotalsCollection = new List<PlayerSimulationsTotals>();
             foreach (var player in _simulationProperties.PlayerPropertiesCollection)
             {
-                _playerSimulationsTotalsCollection.Add(new PlayerSimulationsTotals(player.PlayerStrategy.GetType().Name,
+                _playerSimulationsTotalsCollection.Add(new PlayerSimulationsTotals(player.PlayerStrategy.Name,
                     player.StartingCash));
             }
         }
@@ -62,7 +65,7 @@ namespace BlackjackSimulator.Entities
 
         private void ExecuteSimulationSteps(int runIndex)
         {
-            var tableSimulation = new TableSimulationFactory().CreateTableSimulationFrom(_simulationProperties);
+            var tableSimulation = _tableSimulationFactory.CreateTableSimulationFrom(_simulationProperties);
             var finishedPlayers = tableSimulation.RunSimulationUntilAllPlayersUnregister();
             foreach (var player in finishedPlayers)
             {

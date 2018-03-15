@@ -115,7 +115,7 @@ namespace BlackjackSimulatorTest
         }
 
         [TestMethod]
-        public void When_Player_Receives_Requested_Card_Should_No_Longer_Signal_For_New_Card()
+        public void When_Player_Receives_Requested_Card_Should_No_Longer_Be_Signalling_For_New_Card()
         {
             var playerHand = new PlayerHand();
             _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(playerHand, _nullCard)).Return(true).Repeat.Once();
