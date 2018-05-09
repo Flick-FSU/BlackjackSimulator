@@ -90,22 +90,18 @@ namespace BlackjackSimulatorTest
             var mockPlayer = new Mock<IPlayer>();
             sut.Seat(mockPlayer.Object);
 
-            strictDealerMock.Setup(sdm => sdm.RegisteredPlayers)
-                .Return(new List<IPlayer> {mockPlayer}).Repeat.Once();
-            strictDealerMock.Expect(sdm => sdm.PlaySingleGame()).Repeat.Once();
-            strictDealerMock.Expect(sdm => sdm.RegisteredPlayers)
-                .Return(new List<IPlayer>()).Repeat.Once();
-
-            strictDealerMock.Replay();
+            strictDealerMock.SetupSequence(sdm => sdm.RegisteredPlayers)
+                .Returns(new List<IPlayer> {mockPlayer.Object})
+                .Returns(new List<IPlayer>());
+            strictDealerMock.Setup(sdm => sdm.PlaySingleGame());
 
             sut.RunSimulationUntilAllPlayersUnregister();
-            strictDealerMock.VerifyAllExpectations();
         }
 
         private TableSimulation GetTableSimulationWithMaximumPlayerCountOf(int tableMaximum)
         {
             var tableSettings = new TableSettings(10, 100, tableMaximum);
-            var sut = new TableSimulation(_mockDealer, tableSettings);
+            var sut = new TableSimulation(_mockDealer.Object, tableSettings);
             return sut;
         }
     }
