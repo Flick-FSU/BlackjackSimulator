@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BlackjackSimulator;
 using BlackjackSimulator.Entities;
 using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
@@ -10,7 +9,9 @@ using GamblingLibrary;
 using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rhino.Mocks;
+using MockRepository = Rhino.Mocks.MockRepository;
 
 namespace BlackjackSimulatorTest
 {
@@ -19,7 +20,7 @@ namespace BlackjackSimulatorTest
     {
         private const int TOTAL_CASH_AMOUNT = 500;
         private IPlayer _sut;
-        private IPlayerStrategy _mockPlayerStrategy;
+        private Mock<IPlayerStrategy> _mockPlayerStrategy;
         private readonly ICardValueAssigner _blackjackCardValueAssigner;
         private readonly ICard _nullCard;
         private readonly TableSettings _tableSettings;
@@ -34,8 +35,8 @@ namespace BlackjackSimulatorTest
         [TestInitialize]
         public void MyTestInitialize()
         {
-            _mockPlayerStrategy = MockRepository.GenerateMock<IPlayerStrategy>();
-            _sut = new Player(TOTAL_CASH_AMOUNT, _mockPlayerStrategy);
+            _mockPlayerStrategy = new Mock<IPlayerStrategy>();
+            _sut = new Player(TOTAL_CASH_AMOUNT, _mockPlayerStrategy.Object);
         }
 
         [TestMethod]
@@ -59,7 +60,7 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Taking_A_Card_Should_Increment_Card_Count_By_One()
         {
-            _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
+            _sut.JoinTableWith(GetMockDealerWith(_tableSettings).Object);
             _sut.PlaceInitialBet();
             _sut.TakeCard(_nullCard);
 
@@ -69,10 +70,10 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Joining_Table_With_Dealer_Should_Register_With_Dealer()
         {
-            var mockDealer = MockRepository.GenerateMock<IDealer>();
-            _sut.JoinTableWith(mockDealer);
+            var mockDealer = new Mock<IDealer>();
+            _sut.JoinTableWith(mockDealer.Object);
 
-            mockDealer.AssertWasCalled(md => md.Register(_sut));
+            mockDealer.Verify(md => md.Register(_sut));
         }
 
         [TestMethod]
@@ -84,7 +85,7 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Initial_Bet_Placed_Should_Have_Only_One_Hand()
         {
-            _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
+            _sut.JoinTableWith(GetMockDealerWith(_tableSettings).Object);
             _sut.PlaceInitialBet();
             Assert.AreEqual(1, _sut.CurrentHands.Count);
         }
@@ -92,7 +93,7 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Initial_Bet_Placed_Should_Have_Hand_With_No_Cards()
         {
-            _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
+            _sut.JoinTableWith(GetMockDealerWith(_tableSettings).Object);
             _sut.PlaceInitialBet();
             Assert.IsFalse(_sut.CurrentHands[0].Cards.Any());
         }
@@ -101,9 +102,9 @@ namespace BlackjackSimulatorTest
         public void When_Initial_Bet_Placed_Should_Remove_Bet_Amount_From_Total_Cash()
         {
             decimal initialTotalCash = _sut.CurrentTotalCash;
-            _mockPlayerStrategy.Stub(mps => mps.GetInitialBetAmount(null, 0, null)).IgnoreArguments()
-                .Return(_tableSettings.MinimumBet);
-            _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
+            _mockPlayerStrategy.Setup(mps => mps.GetInitialBetAmount(It.IsAny<IPlayerHand>(), It.IsAny<decimal>(), It.IsAny<TableSettings>()))
+                .Returns(_tableSettings.MinimumBet);
+            _sut.JoinTableWith(GetMockDealerWith(_tableSettings).Object);
             _sut.PlaceInitialBet();
             Assert.AreEqual(initialTotalCash - _sut.CurrentTotalCash, _sut.CurrentHands[0].Bet);
         }
@@ -118,7 +119,7 @@ namespace BlackjackSimulatorTest
         public void When_Player_Receives_Requested_Card_Should_No_Longer_Be_Signalling_For_New_Card()
         {
             var playerHand = new PlayerHand();
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(playerHand, _nullCard)).Return(true).Repeat.Once();
+            _mockPlayerStrategy.SetupSequence(mpb => mpb.ShouldHit(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -131,7 +132,7 @@ namespace BlackjackSimulatorTest
         public void When_Player_Strategy_Says_Should_Hit_Should_Signal_For_New_Card()
         {
             var playerHand = new PlayerHand();
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(playerHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -143,8 +144,8 @@ namespace BlackjackSimulatorTest
         {
             var playerHand = new PlayerHand();
             var nineCard = new Card(CardType.Nine, CardSuit.Clubs, _blackjackCardValueAssigner);
-            playerHand.Cards.AddRange(new List<ICard> {nineCard, nineCard, nineCard});
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(playerHand, _nullCard)).Return(true);
+            playerHand.Cards.AddRange(new List<ICard> { nineCard, nineCard, nineCard });
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -155,7 +156,7 @@ namespace BlackjackSimulatorTest
         public void When_Player_Strategy_Says_Should_Not_Hit_Should_Not_Signal_For_New_Card()
         {
             var playerHand = new PlayerHand();
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(playerHand, _nullCard)).Return(false);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(playerHand, _nullCard)).Returns(false);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -168,11 +169,11 @@ namespace BlackjackSimulatorTest
             var playerHand = new PlayerHand();
             playerHand.Cards.Add(new Card(CardType.Ace, CardSuit.Clubs, _blackjackCardValueAssigner));
             playerHand.Cards.Add(new Card(CardType.Ace, CardSuit.Clubs, _blackjackCardValueAssigner));
-            _mockPlayerStrategy.Stub(mps => mps.ShouldSplit(playerHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldSplit(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
             _sut.PlayTurn(_nullCard);
             _sut.TakeCard(_nullCard);
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Returns(true);
 
             _sut.PlayTurn(_nullCard);
             Assert.IsFalse(_sut.DoesNeedCard);
@@ -184,7 +185,7 @@ namespace BlackjackSimulatorTest
             GivePlayerSplittableHand(_nullCard);
             _sut.PlayTurn(_nullCard);
             _sut.TakeCard(_nullCard);
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Returns(true);
 
             _sut.PlayTurn(_nullCard);
             Assert.IsTrue(_sut.DoesNeedCard);
@@ -196,7 +197,7 @@ namespace BlackjackSimulatorTest
             GivePlayerDoubleDownableHand(_nullCard);
             _sut.PlayTurn(_nullCard);
             _sut.TakeCard(_nullCard);
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldHit(_sut.InPlayHand, _nullCard)).Returns(true);
 
             _sut.PlayTurn(_nullCard);
             Assert.IsFalse(_sut.DoesNeedCard);
@@ -217,7 +218,7 @@ namespace BlackjackSimulatorTest
             var playerHand = new PlayerHand();
             var nineCard = new Card(CardType.Nine, CardSuit.Clubs, _blackjackCardValueAssigner);
             playerHand.Cards.AddRange(new List<ICard> { nineCard, nineCard, nineCard });
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldSplit(playerHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldSplit(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -239,7 +240,7 @@ namespace BlackjackSimulatorTest
         {
             const decimal betAmount = TOTAL_CASH_AMOUNT + 1;
             GivePlayerMockSplittableHand(_nullCard, betAmount);
-            
+
             _sut.PlayTurn(_nullCard);
             _sut.InPlayHand.AssertWasNotCalled(ch => ch.Split());
         }
@@ -256,12 +257,12 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Player_Tries_To_Split_Two_Different_Card_Types_Should_Not_Signal_For_New_Card()
         {
-            var mockPlayBehavior = MockRepository.GenerateMock<IPlayerStrategy>();
+            var mockPlayBehavior = new Mock<IPlayerStrategy>();
             var playerHand = new PlayerHand { Bet = TOTAL_CASH_AMOUNT / 10 };
             playerHand.Cards.Add(new Card(CardType.Eight, CardSuit.Clubs, _blackjackCardValueAssigner));
             playerHand.Cards.Add(new Card(CardType.Nine, CardSuit.Clubs, _blackjackCardValueAssigner));
-            mockPlayBehavior.Stub(mpb => mpb.ShouldSplit(playerHand, _nullCard)).Return(true);
-            var sut = new Player(TOTAL_CASH_AMOUNT, mockPlayBehavior);
+            mockPlayBehavior.Setup(mpb => mpb.ShouldSplit(playerHand, _nullCard)).Returns(true);
+            var sut = new Player(TOTAL_CASH_AMOUNT, mockPlayBehavior.Object);
             sut.CurrentHands.Add(playerHand);
 
             Assert.IsFalse(sut.DoesNeedCard);
@@ -304,7 +305,8 @@ namespace BlackjackSimulatorTest
             Assert.AreEqual(initialTotalCash - _sut.InPlayHand.Bet, _sut.CurrentTotalCash);
         }
 
-        [TestMethod] public void When_Player_Splits_Should_Set_Split_Flag()
+        [TestMethod]
+        public void When_Player_Splits_Should_Set_Split_Flag()
         {
             GivePlayerSplittableHand(_nullCard);
 
@@ -348,7 +350,7 @@ namespace BlackjackSimulatorTest
             var playerHand = new PlayerHand();
             var nineCard = new Card(CardType.Nine, CardSuit.Clubs, _blackjackCardValueAssigner);
             playerHand.Cards.AddRange(new List<ICard> { nineCard, nineCard, nineCard });
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldDoubleDown(playerHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldDoubleDown(playerHand, _nullCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
 
             _sut.PlayTurn(_nullCard);
@@ -393,7 +395,7 @@ namespace BlackjackSimulatorTest
             GivePlayerSplittableHand(_nullCard);
             _sut.PlayTurn(_nullCard);
             _sut.TakeCard(_nullCard);
-            _mockPlayerStrategy.Stub(mps => mps.ShouldDoubleDown(_sut.InPlayHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldDoubleDown(_sut.InPlayHand, _nullCard)).Returns(true);
             _sut.PlayTurn(_nullCard);
 
             Assert.IsFalse(_sut.DoesNeedCard);
@@ -406,7 +408,7 @@ namespace BlackjackSimulatorTest
             _sut.PlayTurn(_nullCard);
             var betAfterSplit = _sut.InPlayHand.Bet;
             _sut.TakeCard(_nullCard);
-            _mockPlayerStrategy.Stub(mps => mps.ShouldDoubleDown(_sut.InPlayHand, _nullCard)).Return(true);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldDoubleDown(_sut.InPlayHand, _nullCard)).Returns(true);
             _sut.PlayTurn(_nullCard);
 
             Assert.AreEqual(betAfterSplit, _sut.InPlayHand.Bet);
@@ -415,8 +417,8 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Player_Has_Two_Hands_Should_Play_The_Second_When_The_First_Is_Finished()
         {
-            var mockPlayerStrategy = MockRepository.GenerateMock<IPlayerStrategy>();
-            var sut = new Player(TOTAL_CASH_AMOUNT, mockPlayerStrategy);
+            var mockPlayerStrategy = new Mock<IPlayerStrategy>();
+            var sut = new Player(TOTAL_CASH_AMOUNT, mockPlayerStrategy.Object);
             var playerHand1 = new PlayerHand();
             var playerHand2 = new PlayerHand();
             sut.CurrentHands.Add(playerHand1);
@@ -435,8 +437,8 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Joined_Table_With_Dealer_Player_Should_Indicate_Is_At_Table()
         {
-            var mockDealer = MockRepository.GenerateMock<IDealer>();
-            _sut.JoinTableWith(mockDealer);
+            var mockDealer = new Mock<IDealer>();
+            _sut.JoinTableWith(mockDealer.Object);
 
             Assert.IsTrue(_sut.IsAtTable);
         }
@@ -445,8 +447,8 @@ namespace BlackjackSimulatorTest
         public void When_Player_Strategy_Says_To_Stay_At_Table_Player_Should_Indicate_Is_At_Table()
         {
             var tableSettings = new TableSettings(10, 500, 4);
-            _sut.JoinTableWith(GetMockDealerWith(tableSettings));
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, tableSettings)).Return(false);
+            _sut.JoinTableWith(GetMockDealerWith(tableSettings).Object);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, tableSettings)).Returns(false);
 
             _sut.LeaveTableOrStay();
             Assert.IsTrue(_sut.IsAtTable);
@@ -456,19 +458,19 @@ namespace BlackjackSimulatorTest
         public void When_Player_Strategy_Says_To_Leave_Table_Should_Unregister_With_Dealer()
         {
             var mockDealer = GetMockDealerWith(_tableSettings);
-            _sut.JoinTableWith(mockDealer);
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Return(true);
+            _sut.JoinTableWith(mockDealer.Object);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Returns(true);
 
             _sut.LeaveTableOrStay();
 
-            mockDealer.AssertWasCalled(md => md.Unregister(_sut));
+            mockDealer.Verify(md => md.Unregister(_sut));
         }
 
         [TestMethod]
         public void When_Player_Strategy_Says_To_Leave_Table_Player_Should_Indicate_Is_Not_At_Table()
         {
-            _sut.JoinTableWith(GetMockDealerWith(_tableSettings));
-            _mockPlayerStrategy.Stub(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Return(true);
+            _sut.JoinTableWith(GetMockDealerWith(_tableSettings).Object);
+            _mockPlayerStrategy.Setup(mps => mps.ShouldLeaveTable(_sut.CurrentTotalCash, _tableSettings)).Returns(true);
 
             _sut.LeaveTableOrStay();
             Assert.IsFalse(_sut.IsAtTable);
@@ -516,31 +518,31 @@ namespace BlackjackSimulatorTest
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => _sut.InPlayHand);
         }
 
-        private static IDealer GetMockDealerWith(TableSettings tableSettings)
+        private static Mock<IDealer> GetMockDealerWith(TableSettings tableSettings)
         {
-            var mockDealer = MockRepository.GenerateMock<IDealer>();
-            mockDealer.Stub(md => md.TableSettings).Return(tableSettings);
+            var mockDealer = new Mock<IDealer>();
+            mockDealer.Setup(md => md.TableSettings).Returns(tableSettings);
             return mockDealer;
         }
 
         private void GivePlayerDoubleDownableHand(ICard visibleCard)
         {
             var playerHand = GetPlayerHandWithTwoOfTheSameCard();
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldDoubleDown(playerHand, visibleCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldDoubleDown(playerHand, visibleCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
         }
 
         private void GivePlayerSplittableHand(ICard visibleCard)
         {
             var playerHand = GetPlayerHandWithTwoOfTheSameCard();
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldSplit(playerHand, visibleCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldSplit(playerHand, visibleCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
         }
 
         private void GivePlayerMockSplittableHand(ICard visibleCard, decimal betAmount)
         {
             var playerHand = GetSplittableMockPlayerHand(betAmount);
-            _mockPlayerStrategy.Stub(mpb => mpb.ShouldSplit(playerHand, visibleCard)).Return(true);
+            _mockPlayerStrategy.Setup(mpb => mpb.ShouldSplit(playerHand, visibleCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand);
         }
 

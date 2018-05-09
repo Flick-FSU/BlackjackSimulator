@@ -4,9 +4,7 @@ using BlackjackSimulator.Entities;
 using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.Strategies;
-using BlackjackSimulator.Strategies.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
 
 namespace BlackjackSimulatorTest
 {

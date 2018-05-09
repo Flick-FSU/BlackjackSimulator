@@ -1,39 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using BlackjackSimulator;
 using BlackjackSimulator.Entities;
 using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Models;
-using BlackjackSimulator.Strategies;
 using BlackjackSimulator.Strategies.Interfaces;
-using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
+using Moq;
 
 namespace BlackjackSimulatorTest
 {
     [TestClass]
     public class TableSimulationTest
     {
-        private IDealer _mockDealer;
-
-        public TableSimulationTest()
-        {
-        }
+        private Mock<IDealer> _mockDealer;
 
         [TestInitialize]
         public void MyTestInitialize()
         {
-            _mockDealer = MockRepository.GenerateMock<IDealer>();
+            _mockDealer = new Mock<IDealer>();
         }
 
         [TestMethod]
         public void When_Table_Simulator_Created_Should_Give_Table_Settings_To_Dealer()
         {
             var tableSettings = new TableSettings(10, 100, 1);
-            var dealer = new Dealer(MockRepository.GenerateMock<IGroupOfCards>(),
-                MockRepository.GenerateMock<IGameManager>(), MockRepository.GenerateMock<IDealerStrategy>());
+            var dealer = new Dealer(new Mock<IGroupOfCards>().Object,
+                new Mock<IGameManager>().Object, new Mock<IDealerStrategy>().Object);
             var sut = new TableSimulation(dealer, tableSettings);
 
             Assert.AreSame(tableSettings, dealer.TableSettings);
@@ -42,46 +35,46 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Seating_Player_And_Already_At_Table_Maximum_Should_Throw_Exception()
         {
-            var sut = GetTableWithMaximumPlayerCountOf(0);
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
+            var sut = GetTableSimulationWithMaximumPlayerCountOf(0);
+            var mockPlayer = new Mock<IPlayer>();
 
-            Assert.ThrowsException<OverflowException>(() => sut.Seat(mockPlayer));
+            Assert.ThrowsException<OverflowException>(() => sut.Seat(mockPlayer.Object));
         }
 
         [TestMethod]
         public void When_Seating_Player_Should_Register_Player_With_Dealer()
         {
-            var sut = GetTableWithMaximumPlayerCountOf(1);
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
-            sut.Seat(mockPlayer);
+            var sut = GetTableSimulationWithMaximumPlayerCountOf(1);
+            var mockPlayer = new Mock<IPlayer>();
+            sut.Seat(mockPlayer.Object);
 
-            mockPlayer.AssertWasCalled(mp => mp.JoinTableWith(_mockDealer));
+            mockPlayer.Verify(mp => mp.JoinTableWith(_mockDealer.Object));
         }
 
         [TestMethod]
         public void When_Seating_Player_Should_Add_Player_To_Seated_Players_Collection()
         {
-            var sut = GetTableWithMaximumPlayerCountOf(1);
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
-            sut.Seat(mockPlayer);
+            var sut = GetTableSimulationWithMaximumPlayerCountOf(1);
+            var mockPlayer = new Mock<IPlayer>();
+            sut.Seat(mockPlayer.Object);
 
-            Assert.IsTrue(sut.SeatedPlayers.Contains(mockPlayer));
+            Assert.IsTrue(sut.SeatedPlayers.Contains(mockPlayer.Object));
         }
 
         [TestMethod]
         public void When_Running_Simulation_With_No_Seated_Players_Should_Throw_Exception()
         {
-            var sut = GetTableWithMaximumPlayerCountOf(1);
+            var sut = GetTableSimulationWithMaximumPlayerCountOf(1);
             Assert.ThrowsException<InvalidOperationException>(() => sut.RunSimulationUntilAllPlayersUnregister());
         }
 
         [TestMethod]
         public void When_Simulation_Run_Should_Return_All_Seated_Players()
         {
-            var sut = GetTableWithMaximumPlayerCountOf(1);
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
-            sut.Seat(mockPlayer);
-            _mockDealer.Stub(md => md.RegisteredPlayers).Return(new List<IPlayer>());
+            var sut = GetTableSimulationWithMaximumPlayerCountOf(1);
+            var mockPlayer = new Mock<IPlayer>();
+            sut.Seat(mockPlayer.Object);
+            _mockDealer.Setup(md => md.RegisteredPlayers).Returns(new List<IPlayer>());
             var players = sut.RunSimulationUntilAllPlayersUnregister();
 
             Assert.AreSame(sut.SeatedPlayers, players);
@@ -90,14 +83,14 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Running_Simulation_Should_Tell_Dealer_To_Play_Until_Registered_Players_Are_Empty()
         {
-            var strictDealerMock = MockRepository.GenerateStrictMock<IDealer>();
+            var strictDealerMock = new Mock<IDealer>(MockBehavior.Strict);
             var tableSettings = new TableSettings(10, 100, 2);
-            strictDealerMock.Expect(sdm => sdm.SetTableSettingsWith(tableSettings));
-            var sut = new TableSimulation(strictDealerMock, tableSettings);
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
-            sut.Seat(mockPlayer);
+            strictDealerMock.Setup(sdm => sdm.SetTableSettingsWith(tableSettings));
+            var sut = new TableSimulation(strictDealerMock.Object, tableSettings);
+            var mockPlayer = new Mock<IPlayer>();
+            sut.Seat(mockPlayer.Object);
 
-            strictDealerMock.Expect(sdm => sdm.RegisteredPlayers)
+            strictDealerMock.Setup(sdm => sdm.RegisteredPlayers)
                 .Return(new List<IPlayer> {mockPlayer}).Repeat.Once();
             strictDealerMock.Expect(sdm => sdm.PlaySingleGame()).Repeat.Once();
             strictDealerMock.Expect(sdm => sdm.RegisteredPlayers)
@@ -109,7 +102,7 @@ namespace BlackjackSimulatorTest
             strictDealerMock.VerifyAllExpectations();
         }
 
-        private TableSimulation GetTableWithMaximumPlayerCountOf(int tableMaximum)
+        private TableSimulation GetTableSimulationWithMaximumPlayerCountOf(int tableMaximum)
         {
             var tableSettings = new TableSettings(10, 100, tableMaximum);
             var sut = new TableSimulation(_mockDealer, tableSettings);

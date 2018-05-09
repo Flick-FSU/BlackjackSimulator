@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using BlackjackSimulator.Entities;
 using BlackjackSimulator.Entities.Interfaces;
 using BlackjackSimulator.Enums;
 using BlackjackSimulator.Models;
 using BlackjackSimulator.Repositories.Interfaces;
 using BlackjackSimulator.Strategies;
-using BlackjackSimulator.Strategies.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rhino.Mocks;
+using MockRepository = Rhino.Mocks.MockRepository;
 
 namespace BlackjackSimulatorTest
 {
@@ -21,10 +21,10 @@ namespace BlackjackSimulatorTest
         [TestInitialize]
         public void MyTestInitialize()
         {
-            var mockStatisticsRepository = MockRepository.GenerateMock<IPlayerSimulationStatisticsRepository>();
-            var mockSimulationsOutputHandler = MockRepository.GenerateMock<ISimulationsOutputHandler>();
-            var mockTableSimulationFactory = MockRepository.GenerateMock<ITableSimulationFactory>();
-            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler, mockTableSimulationFactory);
+            var mockStatisticsRepository = new Mock<IPlayerSimulationStatisticsRepository>();
+            var mockSimulationsOutputHandler = new Mock<ISimulationsOutputHandler>();
+            var mockTableSimulationFactory = new Mock<ITableSimulationFactory>();
+            _sut = new SimulationsRunner(mockStatisticsRepository.Object, mockSimulationsOutputHandler.Object, mockTableSimulationFactory.Object);
         }
 
         [TestMethod]
@@ -36,12 +36,12 @@ namespace BlackjackSimulatorTest
         [TestMethod]
         public void When_Running_Simulations_Should_Save_Simulations_Statistics_In_Repository()
         {
-            var mockStatisticsRepository = MockRepository.GenerateMock<IPlayerSimulationStatisticsRepository>();
-            var mockSimulationsOutputHandler = MockRepository.GenerateMock<ISimulationsOutputHandler>();
-            _sut = new SimulationsRunner(mockStatisticsRepository, mockSimulationsOutputHandler, new TableSimulationFactory());
-            var mockPlayer = MockRepository.GenerateMock<IPlayer>();
-            mockPlayer.Stub(mp => mp.HandHistory).Return(new List<IPlayerHand> {GetHandHistoryHand()});
-            mockPlayer.Stub(mp => mp.StartingCash).Return(100);
+            var mockStatisticsRepository = new Mock<IPlayerSimulationStatisticsRepository>();
+            var mockSimulationsOutputHandler = new Mock<ISimulationsOutputHandler>();
+            _sut = new SimulationsRunner(mockStatisticsRepository.Object, mockSimulationsOutputHandler.Object, new TableSimulationFactory());
+            var mockPlayer = new Mock<IPlayer>();
+            mockPlayer.Setup(mp => mp.HandHistory).Returns(new List<IPlayerHand> {GetHandHistoryHand()});
+            mockPlayer.Setup(mp => mp.StartingCash).Returns(100);
             var simulationProperties = new SimulationProperties
             {
                 MaximumBetForTable = 100,
@@ -54,12 +54,10 @@ namespace BlackjackSimulatorTest
                 }
             };
 
-            mockStatisticsRepository.Expect(msr => msr.Save(new List<PlayerSimulationsStatistics>())).IgnoreArguments();
-            mockStatisticsRepository.Replay();
             _sut.Load(simulationProperties);
             _sut.Run(2);
-            
-            mockStatisticsRepository.VerifyAllExpectations();
+
+            mockStatisticsRepository.Verify(msr => msr.Save(It.IsAny<List<PlayerSimulationsStatistics>>()));
         }
 
         private IPlayerHand GetHandHistoryHand()
