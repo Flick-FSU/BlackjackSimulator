@@ -2,6 +2,7 @@
 using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Rhino.Mocks;
 
 namespace GamblingLibraryTest
@@ -13,13 +14,9 @@ namespace GamblingLibraryTest
 
         public GroupOfCardsTest()
         {
-            _sut = MockRepository.GeneratePartialMock<GroupOfCards>();
-        }
-
-        [TestInitialize]
-        public void MyTestInitialize()
-        {
-            _sut.Stub(goc => goc.Cards).Return(new List<ICard> {new NullCard(), new NullCard()});
+            var mockGroupOfCards = new Mock<GroupOfCards> {CallBase = true};
+            mockGroupOfCards.Setup(goc => goc.Cards).Returns(new List<ICard> { new NullCard(), new NullCard() });
+            _sut = mockGroupOfCards.Object;
         }
 
         [TestMethod]
