@@ -11,7 +11,6 @@ using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rhino.Mocks;
 
 namespace BlackjackSimulatorTest
 {

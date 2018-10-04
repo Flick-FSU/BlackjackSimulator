@@ -3,7 +3,6 @@ using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rhino.Mocks;
 
 namespace GamblingLibraryTest
 {

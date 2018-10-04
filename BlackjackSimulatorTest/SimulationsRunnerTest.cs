@@ -8,8 +8,6 @@ using BlackjackSimulator.Repositories.Interfaces;
 using BlackjackSimulator.Strategies;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rhino.Mocks;
-using MockRepository = Rhino.Mocks.MockRepository;
 
 namespace BlackjackSimulatorTest
 {

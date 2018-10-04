@@ -10,8 +10,6 @@ using GamblingLibrary.Enums;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Rhino.Mocks;
-using MockRepository = Rhino.Mocks.MockRepository;
 
 namespace BlackjackSimulatorTest
 {
@@ -226,25 +224,23 @@ namespace BlackjackSimulatorTest
         }
 
         [TestMethod]
-        [Ignore]
         public void When_Player_Strategy_Says_Should_Split_And_Player_Has_The_Money_Should_Call_For_Hand_Split()
         {
             const decimal betAmount = TOTAL_CASH_AMOUNT / 10;
-            GivePlayerMockSplittableHand(_nullCard, betAmount);
+            var mockPlayerHand = GivePlayerMockSplittableHand(_nullCard, betAmount);
 
             _sut.PlayTurn(_nullCard);
-            _sut.InPlayHand.AssertWasCalled(ch => ch.Split());
+            mockPlayerHand.Verify(mph => mph.Split());
         }
 
         [TestMethod]
-        [Ignore]
         public void When_Player_Strategy_Says_Should_Split_And_Player_Does_Not_Have_The_Money_Should_Not_Call_For_Hand_Split()
         {
             const decimal betAmount = TOTAL_CASH_AMOUNT + 1;
-            GivePlayerMockSplittableHand(_nullCard, betAmount);
+            var mockPlayerHand = GivePlayerMockSplittableHand(_nullCard, betAmount);
 
             _sut.PlayTurn(_nullCard);
-            _sut.InPlayHand.AssertWasNotCalled(ch => ch.Split());
+            mockPlayerHand.Verify(mph => mph.Split(), Times.Never);
         }
 
         [TestMethod]
@@ -541,11 +537,13 @@ namespace BlackjackSimulatorTest
             _sut.CurrentHands.Add(playerHand);
         }
 
-        private void GivePlayerMockSplittableHand(ICard visibleCard, decimal betAmount)
+        private Mock<IPlayerHand> GivePlayerMockSplittableHand(ICard visibleCard, decimal betAmount)
         {
             var playerHand = GetSplittableMockPlayerHand(betAmount);
             _mockPlayerStrategy.Setup(mpb => mpb.ShouldSplit(playerHand.Object, visibleCard)).Returns(true);
             _sut.CurrentHands.Add(playerHand.Object);
+
+            return playerHand;
         }
 
         private PlayerHand GetPlayerHandWithTwoOfTheSameCard()

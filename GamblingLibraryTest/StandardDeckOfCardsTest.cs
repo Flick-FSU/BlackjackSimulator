@@ -2,7 +2,7 @@
 using GamblingLibrary;
 using GamblingLibrary.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
+using Moq;
 
 namespace GamblingLibraryTest
 {
@@ -15,7 +15,7 @@ namespace GamblingLibraryTest
         [TestInitialize]
         public void MyTestInitialize()
         {
-            var cardValueAssigner = MockRepository.GenerateStub<ICardValueAssigner>();
+            var cardValueAssigner = new Mock<ICardValueAssigner>().Object;
             _sut = new StandardDeckOfCards(cardValueAssigner);
         }
 
